@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas id="stage" width="400" height="400"></canvas>
+    <script type="text/javascript">
+        window.onload = function () {
+            var stage = document.getElementById("stage");
+            var context = stage.getContext("2d");
+            document.addEventListener("keydown", keyPush);
+
+            setInterval(game, 60);
+
+            const velocidade = 1;
+            var velocidadeX = velocidadeY = 0;
+            var pontoX = pontoY = 10;
+            var tamanhoPeca = 20;
+            var qtdeBlocosCanvas = 20;
+            var posicaoMacaX = posicaoMacaY = 15;
+
+            var rastro = [];
+            tamanhoCalda = 5;
+
+
+            function game() {
+
+                pontoX += velocidadeX;
+                pontoY += velocidadeY;
+
+                if (pontoX < 0) {
+                    pontoX = qtdeBlocosCanvas - 1;
+                }
+                if (pontoX > qtdeBlocosCanvas - 1) {
+                    pontoX = 0;
+                }
+                if (pontoY < 0) {
+                    pontoY = qtdeBlocosCanvas - 1;
+                }
+                if (pontoY > qtdeBlocosCanvas - 1) {
+                    pontoY = 0;
+                }
+
+                context.fillStyle = "black";
+                context.fillRect(0, 0, stage.width, stage.height);
+
+                context.fillStyle = "red";
+                context.fillRect(
+                    posicaoMacaX * tamanhoPeca, 
+                    posicaoMacaY * tamanhoPeca, 
+                    tamanhoPeca, 
+                    tamanhoPeca
+                );
+
+                context.fillStyle = "gray";
+
+                for (let i = 0; i < rastro.length; i++) {
+
+                    context.fillRect(
+                        rastro[i].x * tamanhoPeca, 
+                        rastro[i].y * tamanhoPeca, 
+                        tamanhoPeca, 
+                        tamanhoPeca
+                    );
+
+                    if (rastro[i].x == pontoX && rastro[i].y == pontoY) {
+                        velocidadeX = velocidadeY = 0;
+                    }
+                }
+
+                rastro.push({
+                    x: pontoX,
+                    y: pontoY
+                });
+                while (rastro.length > tamanhoCalda) {
+                    rastro.shift();
+                }
+
+                if (posicaoMacaX == pontoX && posicaoMacaY == pontoY) {
+                    tamanhoCalda++;
+
+                    posicaoMacaX = Math.floor(Math.random() * qtdeBlocosCanvas);
+                    posicaoMacaY = Math.floor(Math.random() * qtdeBlocosCanvas);
+                }
+            }
+
+            function keyPush(event) {
+                switch (event.keyCode) {
+                    case 37: //left
+                        velocidadeX = -velocidade;
+                        velocidadeY = 0;
+                        break;
+                    case 38: //up
+                        velocidadeX = 0;
+                        velocidadeY = -velocidade;
+                        break;
+                    case 39: // right
+                        velocidadeX = velocidade;
+                        velocidadeY = 0;
+                        break;
+                    case 40: // down
+                        velocidadeX = 0;
+                        velocidadeY = velocidade;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>
